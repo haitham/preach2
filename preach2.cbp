@@ -32,6 +32,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Stl.h" />
 		<Unit filename="preach.cc" />
 		<Unit filename="preach.h" />
 		<Extensions>

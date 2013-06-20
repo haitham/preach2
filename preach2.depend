@@ -1,4 +1,20 @@
 # depslib dependency file v1.0
-1371155027 source:d:\workspace\preach2\preach2\preach.cc
+1371757881 source:d:\workspace\preach2\preach2\preach.cc
+	"preach.h"
+
+1371756920 d:\workspace\preach2\preach2\preach.h
+	<vector>
+	<bitset>
 	<iostream>
+	<lemon/list_graph.h>
+	<lemon/bfs.h>
+	<fstream>
+	<map>
+	<ctime>
+	<sys/time.h>
+	<sys/time.h>
+	<stdlib.h>
+	"Stl.h"
+
+1371584016 d:\workspace\preach2\preach2\stl.h
 
