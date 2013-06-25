@@ -189,14 +189,17 @@ void RemoveIsolatedNodes(ListDigraph& g, NameToNode& nodeMap){
     // reverse the graph again to return it to original state
     reverseGraph(g);
 
-    // Erase all bad nodes
-    Nodes_T badNodes = (forward & backward).flip();
-    FOREACH_BS(badId, badNodes){
-        ListDigraph::Node bad = g.nodeFromId(badId);
-        if (bad != INVALID){
-            g.erase(bad);
-        }
+    //collect bad nodes
+    vector<ListDigraph::Node> badNodes;
+    for (ListDigraph::NodeIt node(g); node != INVALID; ++node){
+        if (!forward[g.id(node)] || !backward[g.id(node)])
+        badNodes.push_back(node);
     }
+
+    // Erase all bad nodes
+    FOREACH_STL(node, badNodes){
+        g.erase(node);
+    }END_FOREACH;
 }
 
 /*Collapses all elementary paths
@@ -268,10 +271,9 @@ void Preprocess(ListDigraph& g,
 	}
 }
 
-/*Minimizes the cuts, then makes sure they are "Good"*/
-void RefineCuts(vector<Cut>& cuts, ListDigraph& g){
-	// check for non-minimality: containment of cuts in other cuts
-	for (size_t i=0; i<cuts.size(); i++){
+/*removes cuts that are masked by smaller cuts*/
+void RemoveRedundantCuts(vector<Cut>& cuts){
+    for (size_t i=0; i<cuts.size(); i++){
 		Cut currenti = cuts.at(i);
 		for (size_t j=i+1; j<cuts.size(); j++){
 			Cut currentj = cuts.at(j);
@@ -289,6 +291,13 @@ void RefineCuts(vector<Cut>& cuts, ListDigraph& g){
 			}
 		}
 	}
+}
+
+/*Minimizes the cuts, then makes sure they are "Good"*/
+void RefineCuts(vector<Cut>& cuts, ListDigraph& g){
+	// check for non-minimality: containment of cuts in other cuts
+	RemoveRedundantCuts(cuts);
+
 	// grow each cut (if necessary) into a good cut
     vector<Cut> goodCuts;
     FOREACH_STL(cut, cuts){
@@ -318,6 +327,46 @@ void RefineCuts(vector<Cut>& cuts, ListDigraph& g){
         goodCuts.push_back(Cut(cut.getLeft(), middle, right));
     }END_FOREACH;
     cuts = goodCuts;
+
+    // Minimize good cuts:
+    // If a node in the middle group has no outgoing edges to the right group
+    // Then move it to the left group
+    vector<Cut> bestCuts;
+    FOREACH_STL(cut, cuts){
+        Nodes_T middle = cut.getMiddle();
+        Nodes_T left = cut.getLeft();
+        Nodes_T right = cut.getRight();
+        vector<int> toMove;
+        FOREACH_BS(nodeId, middle){
+            // make sure it has at least one edge to the right
+            bool hasRight = false;
+            for (ListDigraph::OutArcIt arc(g, g.nodeFromId(nodeId)); arc != INVALID; ++arc){
+                if (right[g.id(g.target(arc))]){
+                    hasRight = true;
+                    break;
+                }
+            }
+            if (!hasRight){
+                toMove.push_back(nodeId);
+            }
+        }
+        FOREACH_STL(nodeId, toMove){
+            middle.reset(nodeId);
+            left.set(nodeId);
+        }END_FOREACH;
+        bestCuts.push_back(Cut(left, middle, right));
+    }END_FOREACH;
+    cuts = bestCuts;
+
+    // Last: remove redundant cuts again
+    RemoveRedundantCuts(cuts);
+}
+
+/*Prints the graph in node IDs*/
+void PrintGraph(ListDigraph& g){
+    for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
+        cout << g.id(g.source(arc)) << " " << g.id(g.target(arc)) << endl;
+    }
 }
 
 /*Starting from a vertex cut, recursively finds all other cuts to the right*/
@@ -332,18 +381,21 @@ void FindAllCuts(Cut& currentCut, vector<Cut>& cuts,  ListDigraph& g, ListDigrap
         Nodes_T left = currentLeft;
         Nodes_T right = currentRight;
         ListDigraph::Node node = g.nodeFromId(nodeId);
-		int addedCount = 0;
 		// Loop over all neighbors of the node
+		bool added = false;
         for (ListDigraph::OutArcIt arc(g, node); arc != INVALID; ++arc){
             ListDigraph::Node next = g.target(arc);
             int nextId = g.id(next);
-            if (right[nextId] && nextId != g.id(target)){ // add from right to middle
-                addedCount ++;
+            if (nextId == g.id(target)){ // cut connected to target, STOP HERE
+                added = false;
+                break;
+            }else if (right[nextId]){ // add from right to middle
+                added = true;
                 right.reset(nextId);
                 middle.set(nextId);
             }
         }
-        if (addedCount > 0){ // added at least one node to the cut
+        if (added){ // added at least one node to the cut
             middle.reset(nodeId);
             left.set(nodeId);
             Cut newCut(left, middle, right);
@@ -353,8 +405,20 @@ void FindAllCuts(Cut& currentCut, vector<Cut>& cuts,  ListDigraph& g, ListDigrap
     }
 }
 
+/*prints cuts*/
+void PrintCuts(vector<Cut>& cuts){
+    FOREACH_STL(cut, cuts){
+        Nodes_T nodes = cut.getMiddle();
+        FOREACH_BS(id, nodes){
+            cout << id << " ";
+        }
+        cout << endl;
+    }END_FOREACH;
+}
+
 /*Finds all good cuts in g*/
-void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node target, vector<Cut>& cuts){
+void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node target, vector<Cut>& cuts, NodeNames& nNames){
+    PrintGraph(g);
     //start by forming the first caut: adjacent to source
     Nodes_T left;
     Nodes_T middle;
@@ -376,12 +440,46 @@ void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node ta
     cuts.push_back(firstCut);
     FindAllCuts(firstCut, cuts, g, target);
 
+    cout << "Before refine: " << cuts.size() << " cuts" << endl;
+    PrintCuts(cuts);
     //refine the cuts: minimize and make them good cuts
-
+    RefineCuts(cuts, g);
+    cout << "After refine: " << cuts.size() << " cuts" << endl;
+    PrintCuts(cuts);
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    cout << "Hello world!" << endl;
+    if (argc < 3) {
+		// arg1: network file
+		// arg2: sources file
+		// arg3: targets file
+		cout << "Usage: preach graph-file sources-file targets-file" << endl;
+		return -1;
+	}
+
+    ListDigraph g;
+	WeightMap wMap(g); // keeps track of weights
+	NodeNames nNames(g); // node names
+	NameToNode nodeMap; // mapping from names to nodes in the graph
+
+	CreateGraph(argv[1], g, nNames, nodeMap, wMap);
+	int numNodes = countNodes(g);
+	int numEdges = countArcs(g);
+	cout << endl << "Original graph size: " << numNodes << " nodes, " << numEdges << " edges" << endl;
+
+	// Read sources and targets and preprocess
+	Preprocess(g, wMap, nNames, nodeMap, argv[2], argv[3], PRE_YES);
+
+	numNodes = countNodes(g);
+	numEdges = countArcs(g);
+	cout << endl << "Modified graph size: " << numNodes << " nodes, " << numEdges << " edges" << endl << endl;
+
+	ListDigraph::Node source = FindNode(SOURCE, g, nNames, nodeMap);
+	ListDigraph::Node target = FindNode(SINK, g, nNames, nodeMap);
+
+	vector<Cut> cuts;
+	FindGoodCuts(g, source, target, cuts, nNames);
+
     return 0;
 }
