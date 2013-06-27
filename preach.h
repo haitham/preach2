@@ -22,7 +22,6 @@ using namespace std;
 
 typedef bitset<MAX_NODES> Nodes_T;
 typedef bitset<MAX_EDGES> Edges_T;
-typedef vector<Edges_T> EdgesSet;
 
 // macro to smoth up the use of bitsets
 #define FOREACH_BS(v, vSet)	  \
@@ -33,14 +32,16 @@ class Cut{
     Nodes_T middle; // The nodes in the
     Nodes_T left; // Set of nodes on the left
     Nodes_T right; // Set of nodes on the right
+    Edges_T coveredEdges; // Set of edges covered by this cut (left and middle)
 
 public:
     // consturctor for a specified cut
-	Cut(Nodes_T& _left, Nodes_T& _middle, Nodes_T& _right):
-		left(_left), middle(_middle), right(_right){}
+	Cut(Nodes_T& _left, Nodes_T& _middle, Nodes_T& _right, Edges_T& _covered):
+		left(_left), middle(_middle), right(_right), coveredEdges(_covered){}
 
     Nodes_T& getMiddle(){return middle;}
     Nodes_T& getRight(){return right;}
     Nodes_T& getLeft(){return left;}
+    Edges_T& getCoveredEdges(){return coveredEdges;}
 };
 
