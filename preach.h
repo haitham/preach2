@@ -45,3 +45,22 @@ public:
     Edges_T& getCoveredEdges(){return coveredEdges;}
 };
 
+class Term{
+    Nodes_T z; // Reachable nodes
+    Nodes_T w; // Unreachable nodes
+    Edges_T x; // Present edges
+    Edges_T y; // Absent edges
+    double coeff; // Duh!
+
+public:
+    Term(Nodes_T _z, Nodes_T _w, Nodes_T _x, Nodes_T _y):
+        z(_z), w(_w), x(_x), y(_y){}
+
+
+};
+
+
+
+
+
+
