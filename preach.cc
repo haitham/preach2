@@ -428,19 +428,24 @@ void FindAllCuts(Cut& currentCut, vector<Cut>& cuts,  ListDigraph& g, ListDigrap
     }
 }
 
+/*prints a cut*/
+void PrintCut(Cut& cut, ListDigraph& g){
+    Nodes_T nodes = cut.getMiddle();
+    FOREACH_BS(id, nodes){
+        cout << id << " ";
+    }
+    cout << " : ";
+    Edges_T covered = cut.getCoveredEdges();
+    FOREACH_BS(id, covered){
+        cout << g.id(g.source(g.arcFromId(id))) << "-" << g.id(g.target(g.arcFromId(id))) << " ";
+    }
+    cout << endl;
+}
+
 /*prints cuts*/
 void PrintCuts(vector<Cut>& cuts, ListDigraph& g){
     FOREACH_STL(cut, cuts){
-        Nodes_T nodes = cut.getMiddle();
-        FOREACH_BS(id, nodes){
-            cout << id << " ";
-        }
-        cout << " : ";
-        Edges_T covered = cut.getCoveredEdges();
-        FOREACH_BS(id, covered){
-            cout << g.id(g.source(g.arcFromId(id))) << "-" << g.id(g.target(g.arcFromId(id))) << " ";
-        }
-        cout << endl;
+        PrintCut(cut, g);
     }END_FOREACH;
 }
 
@@ -489,6 +494,102 @@ void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node ta
     PrintCuts(cuts, g);
 }
 
+/*Gets all edges as a bitset*/
+void EdgesAsBitset(ListDigraph& g, Edges_T& edges){
+    for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
+        edges.set(g.id(arc));
+    }
+}
+
+/*Removes cuts that are obsoleted by cut
+A cut is obsolete if its middle set overlaps with the left set of cut*/
+void RemoveObsoleteCuts(vector<Cut>& cuts, Cut& cut){
+    for (size_t i=0; i<cuts.size(); i++){
+        Cut currentCut = cuts.at(i);
+        if ((currentCut.getMiddle() & cut.getLeft()).any()){ // currentCut is obsolete
+            cuts.erase(cuts.begin() + i);
+            i--;
+        }
+    }
+}
+
+void ConsumeSausage(ListDigraph& g, WeightMap& wMap, Polynomial& poly, Edges_T& sausage, Nodes_T& endNodes){
+    // Build a dictionary of edgeId -> source and target node ids
+    // Will need it with each collapsation operation within this sausage
+    map< int, vector<int> > edgeTerminals;
+    FOREACH_BS(edgeId, sausage){
+        vector<int> terminals;
+        ListDigraph::Arc arc = g.arcFromId(edgeId);
+        terminals.push_back(g.id(g.source(arc)));
+        terminals.push_back(g.id(g.target(arc)));
+        edgeTerminals[edgeId] = terminals;
+    }
+
+    //start adding the edges in the current sausage
+    //here we collapse after each addition (arbitrary)
+    FOREACH_BS(edgeId, sausage){
+        poly.addEdge(edgeId, wMap[g.arcFromId(edgeId)]);
+        poly.collapse(sausage, edgeTerminals, endNodes);
+    }
+
+    //Advance the polynomial: make it ready for next sausage
+    poly.advance();
+}
+
+/*Just for debugging - ignore*/
+bool compareCuts(Cut cut1, Cut cut2){
+    return (cut1.getMiddle().count() < cut2.getMiddle().count());
+}
+
+/*Finds reachability probability given the vertex cuts
+    Starts from the source to the first cut
+    Then removes all the obsolete cuts and pick a next cut
+    An obsolete cut is a cut whose middle set intersects with
+    the left set of the current cut*/
+double Solve(ListDigraph& g, WeightMap& wMap, NameToNode& nodeMap, vector<Cut>& cuts){
+    //FOR DEBUGGING - REMOVE
+    //sort(cuts.begin(), cuts.end(), compareCuts);
+
+    // set up the source term and start the polynomial
+    ListDigraph::Node source = nodeMap[SOURCE];
+    Nodes_T zSource, wSource;
+    zSource.set(g.id(source));
+    vector<Term> sourceTerm;
+    sourceTerm.push_back(Term(zSource, wSource, 1.0));
+    Polynomial poly(sourceTerm);
+
+    Edges_T covered; // This will hold the set of covered edges so far
+    Edges_T sausage; // This will hold the current sausage: edges being considered for addition
+
+    // repeat until no cuts left
+    while(cuts.size() > 0){
+        //select a cut: here we just select the first one (arbitrary)
+        Cut nextCut = cuts.front();
+        cout << "Available " << cuts.size() << " cuts, " << "Using cut: ";
+        PrintCut(nextCut, g);
+        cuts.erase(cuts.begin());
+        // Identify the sausage: The current set of edges in question
+        sausage = nextCut.getCoveredEdges() & ~covered;
+        //Consume the current sausage
+        ConsumeSausage(g, wMap, poly, sausage, nextCut.getMiddle());
+        //mark the sausage as covered
+        covered |= sausage;
+        //remove obsolete cuts
+        RemoveObsoleteCuts(cuts, nextCut);
+    }
+
+    // Last: add the edges between the last cut and the target node
+    Edges_T allEdges; // set of all edges in the network
+    EdgesAsBitset(g, allEdges);
+    sausage = allEdges & ~covered; // the last sausage is all edges that are not yet covered
+    Nodes_T targetSet; // The last stop
+    targetSet.set(g.id(nodeMap[SINK]));
+    ConsumeSausage(g, wMap, poly, sausage, targetSet);
+
+    //RESULT
+    return poly.getResult();
+}
+
 int main(int argc, char** argv)
 {
     if (argc < 3) {
@@ -522,5 +623,7 @@ int main(int argc, char** argv)
 	vector<Cut> cuts;
 	FindGoodCuts(g, source, target, cuts, nNames);
 
+	double prob = Solve(g, wMap, nodeMap, cuts);
+	cout << ">> " << prob << endl;
     return 0;
 }

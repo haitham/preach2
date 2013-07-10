@@ -11,7 +11,7 @@
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="mapk/mapk_hsa_string.txt mapk/mapk_hsa_allsources.txt mapk/mapk_hsa_alltargets.txt" />
+				<Option parameters="test/test1.txt test/test1_sources.txt test/test1_targets.txt" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
