@@ -289,7 +289,7 @@ void RemoveRedundantCuts(vector<Cut>& cuts){
 /*Minimizes the cuts, then makes sure they are "Good"*/
 void RefineCuts(vector<Cut>& cuts, ListDigraph& g){
 	// check for non-minimality: containment of cuts in other cuts
-	RemoveRedundantCuts(cuts);
+	//RemoveRedundantCuts(cuts);
 
 	// grow each cut (if necessary) into a good cut
     vector<Cut> goodCuts;
@@ -442,9 +442,8 @@ void PrintCuts(vector<Cut>& cuts, ListDigraph& g){
     }END_FOREACH;
 }
 
-/*Finds all good cuts in g*/
-void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node target, vector<Cut>& cuts, NodeNames& nNames){
-    //start by forming the first caut: adjacent to source
+/*creates first level cut: nodes adjacent to source*/
+Cut createFirstCut(ListDigraph& g, ListDigraph::Node source){
     Nodes_T left;
     Nodes_T middle;
     Nodes_T right;
@@ -474,7 +473,85 @@ void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node ta
     }
 
     // create the cut and recurse
-    Cut firstCut(left, middle, right, covered);
+    return Cut(left, middle, right, covered);
+}
+
+/*Finds *SOME* good cuts: steps from a cut to the next by
+replacing every node by all of its neighbors*/
+void FindSomeGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node target, vector<Cut>& cuts){
+    //start by forming the first cut: adjacent to source
+    Cut firstCut = createFirstCut(g, source);
+    Nodes_T currentMiddle = firstCut.getMiddle();
+    Nodes_T currentLeft = firstCut.getLeft();
+    Nodes_T currentRight = firstCut.getRight();
+    Edges_T currentCovered = firstCut.getCoveredEdges();
+    cuts.push_back(firstCut);
+    bool added = true;
+    while (added){ // repeat until nothing new is added
+        Nodes_T middle = currentMiddle;
+        Nodes_T left = currentLeft;
+        Nodes_T right = currentRight;
+        Edges_T covered = currentCovered;
+        added = false;
+        FOREACH_BS(nodeId, currentMiddle){
+            ListDigraph::Node node = g.nodeFromId(nodeId);
+            vector<int> nextNodes;
+            vector<int> nextArcs;
+            for (ListDigraph::OutArcIt arc(g, node); arc != INVALID; ++arc){
+                ListDigraph::Node next = g.target(arc);
+                int nextId = g.id(next);
+                if (nextId == g.id(target)){ // node connected to target, ignore all of its neighbors
+                    nextNodes.clear();
+                    nextArcs.clear();
+                    break;
+                }else if (right[nextId]){ // eligible for moving from right to middle
+                    nextNodes.push_back(nextId);
+                    nextArcs.push_back(g.id(arc));
+                }
+            }
+            if (nextNodes.size() > 0){ // There are nodes to move from right to left
+                added = true;
+                FOREACH_STL(nextId, nextNodes){
+                    right.reset(nextId);
+                    middle.set(nextId);
+                }END_FOREACH;
+                FOREACH_STL(nextId, nextArcs){
+                    covered.set(nextId);
+                }END_FOREACH;
+                middle.reset(nodeId);
+                left.set(nodeId);
+            }
+        }
+        if (added){
+            // mark as covered: all edges going from the middle not to the right
+            FOREACH_BS(nodeId, middle){
+                ListDigraph::Node middleNode = g.nodeFromId(nodeId);
+                for (ListDigraph::OutArcIt arc(g, middleNode); arc != INVALID; ++arc){
+                    if (!right[g.id(g.target(arc))]){
+                        covered.set(g.id(arc));
+                    }
+                }
+            }
+            Cut newCut(left, middle, right, covered);
+            cuts.push_back(newCut);
+            currentMiddle = middle;
+            currentLeft = left;
+            currentRight = right;
+            currentCovered = covered;
+        }
+    }
+    cout << "Before refine: " << cuts.size() << " cuts" << endl;
+    PrintCuts(cuts, g);
+    //refine the cuts: minimize and make them good cuts
+    RefineCuts(cuts, g);
+    cout << "After refine: " << cuts.size() << " cuts" << endl;
+    PrintCuts(cuts, g);
+}
+
+/*Finds all good cuts in g*/
+void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node target, vector<Cut>& cuts){
+    //start by forming the first cut: adjacent to source, and recurse
+    Cut firstCut = createFirstCut(g, source);
     cuts.push_back(firstCut);
     FindAllCuts(firstCut, cuts, g, target);
 
@@ -622,7 +699,8 @@ int main(int argc, char** argv)
 	ListDigraph::Node target = FindNode(SINK, g, nNames, nodeMap);
 
 	vector<Cut> cuts;
-	FindGoodCuts(g, source, target, cuts, nNames);
+	//FindGoodCuts(g, source, target, cuts);
+	FindSomeGoodCuts(g, source, target, cuts);
 
 	double prob = Solve(g, wMap, nodeMap, cuts);
 	cout << ">> " << prob << endl;
