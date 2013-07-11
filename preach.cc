@@ -29,7 +29,6 @@ ListDigraph::Node FindNode(string name, ListDigraph& g,
 	// look in map
 	if (nodeMap.find(name) == nodeMap.end()){ // not found, add
 		ListDigraph::Node node = g.addNode();
-//		cout << "node: " << g.id(node) << endl;
 		nodeMap[name]=node;
 	}
 
@@ -63,13 +62,10 @@ void CreateGraph(char* filename, ListDigraph& g,
 		if (weight==-1.0)
 			continue;
 
-//		cout << start << "\t" << stop << "\t" << weight << endl;
-
 		ListDigraph::Node sN = FindNode(start, g, nMap, nodeMap );
 		ListDigraph::Node tN = FindNode(stop, g, nMap, nodeMap);
 		if (!EdgeExists(g, sN, tN)){
 			ListDigraph::Arc a = g.addArc(sN, tN);
-//			cout << "edge: " << g.id(a) << endl;
 			wMap[a]=weight;
 		}
 	}
@@ -79,14 +75,12 @@ void CreateGraph(char* filename, ListDigraph& g,
 void ReadList(string filename, vector<string>& list) {
 	fstream in(filename.data());
 	string item;
-//	cout << "reading " << filename <<endl;
 	while (!in.eof()) {
 		item = "";
 		in >> item;
 
 		if (item.empty())
 			continue;
-//		cout << item << endl;
 		list.push_back(item);
 	}
 	in.close();
@@ -107,7 +101,6 @@ void UnifyTerminals(ListDigraph& g,
 	//read sources and targets
 	ReadList(sourcesFile, sources);
 	ReadList(targetsFile, targets);
-//	cout << sources.size() << " sources, " << targets.size() << " targets" << endl;
 
 	//create unified source and sink nodes
 	ListDigraph::Node source = FindNode(SOURCE, g, nMap, nodeMap);
@@ -451,7 +444,6 @@ void PrintCuts(vector<Cut>& cuts, ListDigraph& g){
 
 /*Finds all good cuts in g*/
 void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node target, vector<Cut>& cuts, NodeNames& nNames){
-    PrintGraph(g);
     //start by forming the first caut: adjacent to source
     Nodes_T left;
     Nodes_T middle;
@@ -487,11 +479,11 @@ void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node ta
     FindAllCuts(firstCut, cuts, g, target);
 
     cout << "Before refine: " << cuts.size() << " cuts" << endl;
-    PrintCuts(cuts, g);
+    //PrintCuts(cuts, g);
     //refine the cuts: minimize and make them good cuts
     RefineCuts(cuts, g);
     cout << "After refine: " << cuts.size() << " cuts" << endl;
-    PrintCuts(cuts, g);
+    //PrintCuts(cuts, g);
 }
 
 /*Gets all edges as a bitset*/
@@ -514,7 +506,6 @@ void RemoveObsoleteCuts(vector<Cut>& cuts, Cut& cut){
 }
 
 void ConsumeSausage(ListDigraph& g, WeightMap& wMap, Polynomial& poly, Edges_T& sausage, Nodes_T& endNodes){
-    cout << "Sausage size: " << sausage.count() << endl;
     // Build a dictionary of edgeId -> source and target node ids
     // Will need it with each collapsation operation within this sausage
     map< int, vector<int> > edgeTerminals;
@@ -566,11 +557,11 @@ double Solve(ListDigraph& g, WeightMap& wMap, NameToNode& nodeMap, vector<Cut>& 
     while(cuts.size() > 0){
         //select a cut: here we just select the first one (arbitrary)
         Cut nextCut = cuts.front();
-        cout << "Available " << cuts.size() << " cuts, " << "Using cut: ";
-        PrintCut(nextCut, g);
+        cout << "Available " << cuts.size() << " cuts, ";
         cuts.erase(cuts.begin());
         // Identify the sausage: The current set of edges in question
         sausage = nextCut.getCoveredEdges() & ~covered;
+        cout << "Sausage size: " << sausage.count() << endl;
         //Consume the current sausage
         ConsumeSausage(g, wMap, poly, sausage, nextCut.getMiddle());
         //mark the sausage as covered
