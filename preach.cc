@@ -289,7 +289,7 @@ void RemoveRedundantCuts(vector<Cut>& cuts){
 /*Minimizes the cuts, then makes sure they are "Good"*/
 void RefineCuts(vector<Cut>& cuts, ListDigraph& g){
 	// check for non-minimality: containment of cuts in other cuts
-	//RemoveRedundantCuts(cuts);
+	RemoveRedundantCuts(cuts);
 
 	// grow each cut (if necessary) into a good cut
     vector<Cut> goodCuts;
@@ -363,7 +363,7 @@ void RefineCuts(vector<Cut>& cuts, ListDigraph& g){
     cuts = bestCuts;
 
     // Last: remove redundant cuts again
-    //RemoveRedundantCuts(cuts);
+    RemoveRedundantCuts(cuts);
 }
 
 /*Prints the graph in node IDs*/
