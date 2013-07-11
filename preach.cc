@@ -541,11 +541,11 @@ void FindSomeGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Nod
         }
     }
     cout << "Before refine: " << cuts.size() << " cuts" << endl;
-    PrintCuts(cuts, g);
+    //PrintCuts(cuts, g);
     //refine the cuts: minimize and make them good cuts
     RefineCuts(cuts, g);
     cout << "After refine: " << cuts.size() << " cuts" << endl;
-    PrintCuts(cuts, g);
+    //PrintCuts(cuts, g);
 }
 
 /*Finds all good cuts in g*/
