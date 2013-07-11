@@ -37,6 +37,8 @@ class Cut{
     Edges_T coveredEdges; // Set of edges covered by this cut (left and middle)
 
 public:
+    Cut(){}
+
     // consturctor for a specified cut
 	Cut(Nodes_T& _left, Nodes_T& _middle, Nodes_T& _right, Edges_T& _covered):
 		left(_left), middle(_middle), right(_right), coveredEdges(_covered){}
