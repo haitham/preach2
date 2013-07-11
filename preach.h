@@ -146,7 +146,7 @@ public:
 
 class Polynomial{
     vector<Term> terms; // regular terms with start nodes and middle edges
-    map<ulong, Term> endTerms; // black holes with end nodes, the key is z nodes as ulong
+    map<string, Term> endTerms; // black holes with end nodes, the key is z nodes as ulong
 
 public:
     Polynomial(vector<Term>& _terms): terms(_terms){}
@@ -179,12 +179,12 @@ public:
         //copy endTerms to terms
         terms = vector<Term>();
         double totalCoeff = 0.0;
-        for (map<ulong, Term>::iterator iter = endTerms.begin(); iter != endTerms.end(); ++iter){
+        for (map<string, Term>::iterator iter = endTerms.begin(); iter != endTerms.end(); ++iter){
             totalCoeff += iter->second.getCoeff();
             terms.push_back(iter->second);
         }
         //reinitialize endTerms
-        endTerms = map<ulong, Term>();
+        endTerms = map<string, Term>();
 
         //SANITY CHECK
         assert(totalCoeff < 1.01 && totalCoeff > 0.99);
@@ -220,7 +220,7 @@ public:
             if (collapsed){ // term DOES collapse to z
                 // Now we find the corresponding endTerm, or create it
                 Term endTerm;
-                int endTermId = z.to_ulong();
+                string endTermId = z.to_string< char,char_traits<char>,allocator<char> >();
                 if (endTerms.find(endTermId) != endTerms.end()){ // endTerm found
                     endTerm = endTerms[endTermId];
                 }else{ // endTerm not found, create it

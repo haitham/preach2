@@ -11,7 +11,7 @@
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="test/test1.txt test/test1_sources.txt test/test1_targets.txt" />
+				<Option parameters="wnt/wnt_hsa_string.txt wnt/wnt_hsa_sources0.txt wnt/wnt_hsa_targets0.txt" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -21,6 +21,7 @@
 				<Option object_output="obj\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="wnt/wnt_hsa_string.txt wnt/wnt_hsa_allsources.txt wnt/wnt_hsa_alltargets.txt" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>

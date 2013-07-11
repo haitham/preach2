@@ -192,8 +192,8 @@ void RemoveIsolatedNodes(ListDigraph& g, NameToNode& nodeMap){
     //collect bad nodes
     vector<ListDigraph::Node> badNodes;
     for (ListDigraph::NodeIt node(g); node != INVALID; ++node){
-        if (!forward[g.id(node)] || !backward[g.id(node)])
-        badNodes.push_back(node);
+        if (g.id(node) != g.id(nodeMap[SOURCE]) && g.id(node) != g.id(nodeMap[SINK]) && !(forward[g.id(node)] && backward[g.id(node)]))
+            badNodes.push_back(node);
     }
 
     // Erase all bad nodes
@@ -514,6 +514,7 @@ void RemoveObsoleteCuts(vector<Cut>& cuts, Cut& cut){
 }
 
 void ConsumeSausage(ListDigraph& g, WeightMap& wMap, Polynomial& poly, Edges_T& sausage, Nodes_T& endNodes){
+    cout << "Sausage size: " << sausage.count() << endl;
     // Build a dictionary of edgeId -> source and target node ids
     // Will need it with each collapsation operation within this sausage
     map< int, vector<int> > edgeTerminals;
@@ -616,6 +617,15 @@ int main(int argc, char** argv)
 	numNodes = countNodes(g);
 	numEdges = countArcs(g);
 	cout << endl << "Modified graph size: " << numNodes << " nodes, " << numEdges << " edges" << endl << endl;
+
+	if (numEdges == 0){ // empty graph - source and target unreachable
+	    cout << ">>0.0" << endl;
+	    return 0;
+    }
+
+    if (numEdges == 1){ // only 1 edge: source -> sink
+        cout << ">>" << wMap[ListDigraph::ArcIt(g)] << endl;
+    }
 
 	ListDigraph::Node source = FindNode(SOURCE, g, nNames, nodeMap);
 	ListDigraph::Node target = FindNode(SINK, g, nNames, nodeMap);
