@@ -262,6 +262,22 @@ void Preprocess(ListDigraph& g,
 		RemoveIsolatedNodes(g, nodeMap);
 		CollapseELementaryPaths(g, wMap, nMap);
 	}
+	//EXTRA STEP: make sure source and sink are not directly connected
+	ListDigraph::Node source = nodeMap[SOURCE];
+	ListDigraph::Node sink = nodeMap[SINK];
+    for (ListDigraph::OutArcIt arc(g, source); arc != INVALID; ++arc){
+        if (g.id(g.target(arc)) == g.id(sink)){ // direct source-sink connection - isolate with a middle node
+            ListDigraph::Node isolator = g.addNode();
+            nodeMap["ISOLATOR"] = isolator;
+            nMap[isolator] = "ISOLATOR";
+            ListDigraph::Arc head = g.addArc(isolator, sink);
+            wMap[head] = wMap[arc];
+            ListDigraph::Arc tail = g.addArc(source, isolator);
+            wMap[tail] = 1.0;
+            g.erase(arc);
+            break;
+        }
+    }
 }
 
 /*removes cuts that are masked by smaller cuts*/
@@ -606,8 +622,12 @@ void ConsumeSausage(ListDigraph& g, WeightMap& wMap, Polynomial& poly, Edges_T& 
 
     //start adding the edges in the current sausage
     //here we collapse after each addition (arbitrary)
+    int edgeCounter = 0;
     FOREACH_BS(edgeId, sausage){
+        edgeCounter ++;
+        cout << "Adding edge " << edgeCounter;
         poly.addEdge(edgeId, wMap[g.arcFromId(edgeId)]);
+        cout << ", Collapsing!" << endl;
         poly.collapse(sausage, edgeTerminals, endNodes);
     }
 
@@ -644,13 +664,18 @@ double Solve(ListDigraph& g, WeightMap& wMap, NameToNode& nodeMap, vector<Cut>& 
     while(cuts.size() > 0){
         //select a cut: here we just select the first one (arbitrary)
         Cut nextCut = cuts.front();
-        cout << "Available " << cuts.size() << " cuts, ";
+        cout << "Available " << cuts.size() << " cuts, Using cut with size " << nextCut.size();
         cuts.erase(cuts.begin());
         // Identify the sausage: The current set of edges in question
         sausage = nextCut.getCoveredEdges() & ~covered;
-        cout << "Sausage size: " << sausage.count() << endl;
+        cout << ", Sausage size: " << sausage.count() << endl;
         //Consume the current sausage
-        ConsumeSausage(g, wMap, poly, sausage, nextCut.getMiddle());
+        try{
+            ConsumeSausage(g, wMap, poly, sausage, nextCut.getMiddle());
+        }catch(exception& e){
+            cout << endl << "EXCEPTION: " << e.what() << ": " << typeid(e).name() << endl;
+            exit(3);
+        }
         //mark the sausage as covered
         covered |= sausage;
         //remove obsolete cuts
@@ -700,10 +725,6 @@ int main(int argc, char** argv)
 	if (numEdges == 0){ // empty graph - source and target unreachable
 	    cout << ">>0.0" << endl;
 	    return 0;
-    }
-
-    if (numEdges == 1){ // only 1 edge: source -> sink
-        cout << ">>" << wMap[ListDigraph::ArcIt(g)] << endl;
     }
 
 	ListDigraph::Node source = FindNode(SOURCE, g, nNames, nodeMap);

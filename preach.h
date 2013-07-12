@@ -47,6 +47,7 @@ public:
     Nodes_T& getRight(){return right;}
     Nodes_T& getLeft(){return left;}
     Edges_T& getCoveredEdges(){return coveredEdges;}
+    int size(){return middle.count();}
 };
 
 class Term{
