@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="Debug" />
+	<ActiveTarget name="Release" />
 	<File name="preach.cc" open="1" top="1" tabpos="2">
-		<Cursor position="23179" topLine="645" />
+		<Cursor position="385" topLine="60" />
 	</File>
 	<File name="preach.h" open="1" top="0" tabpos="1">
-		<Cursor position="928" topLine="31" />
+		<Cursor position="479" topLine="3" />
 	</File>
 </CodeBlocks_layout_file>

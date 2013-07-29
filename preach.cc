@@ -9,11 +9,6 @@ typedef ListDigraph::ArcMap<double> WeightMap;
 typedef ListDigraph::NodeMap<string> NodeNames;
 typedef map<string, ListDigraph::Node> NameToNode;
 
-#ifdef WIN32
-void srand48(int seed){srand(seed);}
-double drand48(){return ((double)rand())/RAND_MAX;}
-#endif
-
 const string SOURCE = "SOURCE";
 const string SINK = "SINK";
 const string PRE_YES = "pre";
