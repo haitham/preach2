@@ -726,8 +726,8 @@ int main(int argc, char** argv)
 	ListDigraph::Node target = FindNode(SINK, g, nNames, nodeMap);
 
 	vector<Cut> cuts;
-	FindGoodCuts(g, source, target, cuts);
-	//FindSomeGoodCuts(g, source, target, cuts);
+	//FindGoodCuts(g, source, target, cuts);
+	FindSomeGoodCuts(g, source, target, cuts);
 
 	double prob = Solve(g, wMap, nodeMap, cuts);
 	cout << ">> " << prob << endl;
