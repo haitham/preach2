@@ -18,7 +18,7 @@
 #include "Stl.h"
 
 #define MAX_NODES 512
-#define MAX_EDGES 2048
+#define MAX_EDGES 6144
 
 using namespace std;
 
