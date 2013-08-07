@@ -709,7 +709,7 @@ int main(int argc, char** argv)
 	int numNodes = countNodes(g);
 	int numEdges = countArcs(g);
 	//cout << endl << "Original graph size: " << numNodes << " nodes, " << numEdges << " edges" << endl;
-	cout << numNodes << "  " << numEdges << " ";
+	cout << numNodes << "  " << numEdges << "  ";
 
 	// Read sources and targets and preprocess
 	Preprocess(g, wMap, nNames, nodeMap, argv[2], argv[3], PRE_YES);
@@ -717,7 +717,7 @@ int main(int argc, char** argv)
 	numNodes = countNodes(g);
 	numEdges = countArcs(g);
 	//cout << endl << "Modified graph size: " << numNodes << " nodes, " << numEdges << " edges" << endl << endl;
-	cout << numNodes << "  " << numEdges << " ";
+	cout << numNodes << "  " << numEdges << "  ";
 
 	if (numEdges == 0){ // empty graph - source and target unreachable
 	    //cout << ">>0.0" << endl;
