@@ -732,6 +732,7 @@ int main(int argc, char** argv)
 	FindSomeGoodCuts(g, source, target, cuts);
 
 	double prob = Solve(g, wMap, nodeMap, cuts);
-	cout << ">> " << prob << endl;
+	//cout << ">> " << prob << endl;
+	cout << prob << endl;
     return 0;
 }
