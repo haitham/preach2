@@ -558,11 +558,12 @@ void FindSomeGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Nod
             currentCovered = covered;
         }
     }
-    cout << "Before refine: " << cuts.size() << " cuts" << endl;
+    //cout << "Before refine: " << cuts.size() << " cuts" << endl;
     //PrintCuts(cuts, g);
     //refine the cuts: minimize and make them good cuts
     RefineCuts(cuts, g, target);
-    cout << "After refine: " << cuts.size() << " cuts" << endl;
+    //cout << "After refine: " << cuts.size() << " cuts" << endl;
+    cout << cuts.size() << "  ";
     //PrintCuts(cuts, g);
 }
 
@@ -576,11 +577,12 @@ void FindGoodCuts(ListDigraph& g, ListDigraph::Node source, ListDigraph::Node ta
     cuts.push_back(firstCut);
     FindAllCuts(firstCut, cuts, g, target);
 
-    cout << "Before refine: " << cuts.size() << " cuts" << endl;
+    //cout << "Before refine: " << cuts.size() << " cuts" << endl;
     //PrintCuts(cuts, g);
     //refine the cuts: minimize and make them good cuts
     RefineCuts(cuts, g, target);
-    cout << "After refine: " << cuts.size() << " cuts" << endl;
+    //cout << "After refine: " << cuts.size() << " cuts" << endl;
+    cout << cuts.size() << "  ";
     //PrintCuts(cuts, g);
 }
 
@@ -659,14 +661,16 @@ double Solve(ListDigraph& g, WeightMap& wMap, NameToNode& nodeMap, vector<Cut>& 
     while(cuts.size() > 0){
         //select a cut: here we just select the first one (arbitrary)
         Cut nextCut = cuts.front();
-        cout << "Available " << cuts.size() << " cuts, Using cut with size " << nextCut.size();
+        //cout << "Available " << cuts.size() << " cuts, Using cut with size " << nextCut.size();
+        cout << nextCut.size() << "  ";
         cuts.erase(cuts.begin());
         // Identify the sausage: The current set of edges in question
         sausage = nextCut.getCoveredEdges() & ~covered;
-        cout << ", Sausage size: " << sausage.count() << endl;
+        //cout << ", Sausage size: " << sausage.count() << endl;
+        cout << sausage.count() << "  ";
         //Consume the current sausage
         try{
-            ConsumeSausage(g, wMap, poly, sausage, nextCut.getMiddle());
+            //ConsumeSausage(g, wMap, poly, sausage, nextCut.getMiddle());
         }catch(exception& e){
             cout << endl << "EXCEPTION: " << e.what() << ": " << typeid(e).name() << endl;
             exit(3);
@@ -683,11 +687,13 @@ double Solve(ListDigraph& g, WeightMap& wMap, NameToNode& nodeMap, vector<Cut>& 
     sausage = allEdges & ~covered; // the last sausage is all edges that are not yet covered
     Nodes_T targetSet; // The last stop
     targetSet.set(g.id(nodeMap[SINK]));
-    cout << "Last step, Sausage size: " << sausage.count() << endl;
-    ConsumeSausage(g, wMap, poly, sausage, targetSet);
+    //cout << "Last step, Sausage size: " << sausage.count() << endl;
+    cout << "1  " << sausage.count() << "  ";
+    //ConsumeSausage(g, wMap, poly, sausage, targetSet);
 
     //RESULT
-    return poly.getResult();
+    //return poly.getResult();
+    return -1.0;
 }
 
 int main(int argc, char** argv)
@@ -734,6 +740,7 @@ int main(int argc, char** argv)
 
 	double prob = Solve(g, wMap, nodeMap, cuts);
 	//cout << ">> " << prob << endl;
-	cout << prob << endl;
+	//cout << prob << endl;
+	cout << endl;
     return 0;
 }

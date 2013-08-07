@@ -7,7 +7,8 @@ open output, "w" do |f|
 		targets.each do |target|
 			puts "../preach #{network} #{source} #{target}"
 			output = `../preach #{network} #{source} #{target}`
-			f.puts output.strip
+			f.puts "#{source}  #{target}  #{output.strip}"
+			#f.puts "../preach #{network} #{source} #{target}"
 		end
 	end
 end
