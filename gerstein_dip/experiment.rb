@@ -1,14 +1,13 @@
 network, output = ARGV
-sources = Dir.glob(network.gsub(".txt", "_source*.txt")).map{|file| file.split("source").last.split(".").first.to_i}.sort
-targets = Dir.glob(network.gsub(".txt", "_target*.txt")).map{|file| file.split("target").last.split(".").first.to_i}.sort
-
+sources = Dir.glob "*_source*.txt"
+targets = Dir.glob "*_target*.txt"
 
 open output, "w" do |f|
 	sources.each do |source|
 		targets.each do |target|
-			puts "../preach #{network} #{network.gsub(".txt", "_source#{source}.txt")} #{network.gsub(".txt", "_target#{target}.txt")}"
-			output = `../preach #{network} #{network.gsub(".txt", "_source#{source}.txt")} #{network.gsub(".txt", "_target#{target}.txt")}`
-			f.puts output
+			puts "../preach #{network} #{source} #{target}"
+			output = `../preach #{network} #{source} #{target}`
+			f.puts output.strip
 		end
 	end
 end
