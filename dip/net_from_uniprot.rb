@@ -33,7 +33,7 @@ open input do |fin|
 			p2name = (gene.class == Array) ? gene.map{|g| g["name"]}.flatten : gene["name"]
 			p2name = p2name.join("|") if p2name.class == Array
 			
-			fout.puts "#{p1name} \t\t #{p2name}"
+			fout.puts "#{p1} \t\t #{p2} \t\t #{p1name} \t\t #{p2name}"
 		end
 	end
 end
