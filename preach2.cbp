@@ -21,7 +21,7 @@
 				<Option object_output="obj\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="wnt/wnt_hsa_string.txt wnt/wnt_hsa_allsources.txt wnt/wnt_hsa_alltargets.txt" />
+				<Option parameters="gerstein_dip/gerstein_dip.dummy.txt gerstein_dip/gerstein_dip_source1.txt gerstein_dip/gerstein_dip_target66.txt" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
