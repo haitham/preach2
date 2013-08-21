@@ -6,6 +6,7 @@ dirs.each do |dir|
 		open "#{dir}/network.txt", "w" do |txt|
 			until (line = sif.gets).nil?
 				s, d, t = line.split
+				next if s.nil? or t.nil?
 				txt.puts "#{s}   #{t}   0.5"
 			end
 		end
