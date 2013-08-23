@@ -1,7 +1,7 @@
 dir = ARGV[0]
 size = dir.split("/").last.split("-").first.to_i
 
-open "#{dir}/stats.out", "w" do |f|
+open "#{dir}/time.out", "w" do |f|
 	0.upto(size-1) do |s|
 		0.upto(size-1) do |t|
 			next if s == t
