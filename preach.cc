@@ -670,7 +670,7 @@ double Solve(ListDigraph& g, WeightMap& wMap, NameToNode& nodeMap, vector<Cut>& 
         cout << sausage.count() << "  ";
         //Consume the current sausage
         try{
-            ConsumeSausage(g, wMap, poly, sausage, nextCut.getMiddle());
+            //ConsumeSausage(g, wMap, poly, sausage, nextCut.getMiddle());
         }catch(exception& e){
             cout << endl << "EXCEPTION: " << e.what() << ": " << typeid(e).name() << endl;
             exit(3);
@@ -689,11 +689,11 @@ double Solve(ListDigraph& g, WeightMap& wMap, NameToNode& nodeMap, vector<Cut>& 
     targetSet.set(g.id(nodeMap[SINK]));
     //cout << "Last step, Sausage size: " << sausage.count() << endl;
     cout << "1  " << sausage.count() << "  ";
-    ConsumeSausage(g, wMap, poly, sausage, targetSet);
+    //ConsumeSausage(g, wMap, poly, sausage, targetSet);
 
     //RESULT
-    return poly.getResult();
-    //return -1.0;
+    //return poly.getResult();
+    return -1.0;
 }
 
 int main(int argc, char** argv)
@@ -727,7 +727,7 @@ int main(int argc, char** argv)
 
 	if (numEdges == 0){ // empty graph - source and target unreachable
 	    //cout << ">>0.0" << endl;
-	    cout << "0.0" << endl;
+	    //cout << "0.0" << endl;
 	    return 0;
     }
 
@@ -740,7 +740,7 @@ int main(int argc, char** argv)
 
 	double prob = Solve(g, wMap, nodeMap, cuts);
 	//cout << ">> " << prob << endl;
-	cout << prob << endl;
+	//cout << prob;
 	cout << endl;
     return 0;
 }
