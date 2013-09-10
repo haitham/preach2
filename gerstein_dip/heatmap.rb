@@ -27,5 +27,5 @@ open "matlab/#{table.gsub(".table", ".m").gsub("reachability.", "heatmap_")}", "
 	fout.puts "RowLabels = #{row_labels}"
 	fout.puts "ColumnLabels = #{column_labels}"
 	fout.puts "Matrix = #{matrix}"
-	fout.puts "HM = HeatMap(Matrix, 'RowLabels', RowLabels, 'ColumnLabels', ColumnLabels, 'Symmetric', false)"
+	fout.puts "HM = HeatMap(Matrix, 'RowLabels', RowLabels, 'ColumnLabels', ColumnLabels, 'Symmetric', false, 'Standardize', 'none')"
 end

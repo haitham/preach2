@@ -28,8 +28,8 @@ open "matlab/#{input.gsub(".table", ".m").gsub("reachability.", "cluster_#{"gray
 	fout.puts "Matrix = #{matrix}"
 	if grayscale
 		fout.puts "ColorMap = #{graymap}"
-		fout.puts "CG = clustergram(Matrix, 'RowLabels', RowLabels, 'ColumnLabels', ColumnLabels, 'Symmetric', false, 'ColorMap', ColorMap)"
+		fout.puts "CG = clustergram(Matrix, 'RowLabels', RowLabels, 'ColumnLabels', ColumnLabels, 'Symmetric', false, 'ColorMap', ColorMap, 'Standardize', 'none')"
 	else
-		fout.puts "CG = clustergram(Matrix, 'RowLabels', RowLabels, 'ColumnLabels', ColumnLabels, 'Symmetric', false)"
+		fout.puts "CG = clustergram(Matrix, 'RowLabels', RowLabels, 'ColumnLabels', ColumnLabels, 'Symmetric', false, 'Standardize', 'none')"
 	end
 end
