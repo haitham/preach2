@@ -19,7 +19,7 @@ end
 
 matrix = ""
 ordered_sources.each do |s|
-	matrix = "#{matrix}\n #{ordered_targets.map{|t| probs[s][t]}.join " "}"
+	matrix = "#{matrix}\n #{ordered_targets.map{|t| probs[s][t] || "0.0"}.join " "}"
 end
 matrix = "[#{matrix}]"
 

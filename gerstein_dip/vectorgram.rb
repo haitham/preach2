@@ -7,7 +7,11 @@ typenames = {"1" => "Hyperdiploid",
 "7" => "Other",
 "8" => "T-ALL",
 "9" => "CD10CD19",
-"10" => "CD34"}
+"10" => "CD34",
+"c0" => "Laurenti_all",
+"c1" => "Laurenti_HSC",
+"c2" => "Laurenti_lymphoid",
+"c3" => "Laurenti_myeloid"}
 
 files = ARGV
 pairs = []
@@ -39,9 +43,9 @@ files.each do |file|
 end
 
 open "reachability.vectors.table", "w" do |f|
-	f.puts "#{sprintf "%-16s", ""}#{pairs.map{|p| sprintf "%-14s", p}.join}"
+	f.puts "#{sprintf "%-20s", ""}#{pairs.map{|p| sprintf "%-14s", p}.join}"
 	probs.each do |type, prob|
-		f.puts "#{sprintf "%-16s", typenames[type]}#{pairs.map{|p| sprintf "%-14s", prob[p]}.join}"
+		f.puts "#{sprintf "%-20s", typenames[type]}#{pairs.map{|p| sprintf "%-14s", (prob[p] || "0.0")}.join}"
 	end
 end
 
