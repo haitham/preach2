@@ -7,9 +7,10 @@ reference = {}
 sources.each do |source|
 	reference[source] = {}
 	targets.each do |target|
+		print "Running #{dataset} reference from #{source} to #{target}: "
 		output = `../../preach #{dataset}.txt source#{source}.txt target#{target}.txt`
 		reference[source][target] = output.strip.split.last.to_f
-		puts "Ran #{dataset} reference from #{source} to #{target}: #{reference[source][target]}"
+		puts reference[source][target]
 	end
 end
 
@@ -19,9 +20,10 @@ nodes.each do |node|
 	values[node] = 0.0
 	sources.each do |source|
 		targets.each do |target|
+			print "Running missing_#{node} from #{source} to #{target}: "
 			output = `../../preach #{dataset}.missing_#{node}.txt source#{source}.txt target#{target}.txt`
 			new_value = output.strip.split.last.to_f
-			puts "Ran missing_#{node} from #{source} to #{target}: #{new_value}"
+			puts new_value
 			values[node] = values[node] + reference[source][target] - new_value
 		end
 	end
