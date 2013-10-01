@@ -27,14 +27,11 @@ nodes.each do |node|
 			values[node] = values[node] + reference[source][target] - new_value
 		end
 	end
+	open "#{dataset}.out", "a" do |f|
+		f.puts "#{sprintf "%-14s", node}#{values[node]}"
+	end
 end
 
 open "#{dataset}.sorted.out", "w" do |f|
 	values.map{|k,v| [k,v]}.sort{|a,b| b[1] <=> a[1]}.each{|p| f.puts "#{sprintf "%-12f", p[1]}#{"  "}#{p[0]}"}
-end
-
-open "#{dataset}.out", "w" do |f|
-	nodes.each do |node|
-		f.puts "#{sprintf "%-10s", node}#{values[node]}"
-	end
 end
