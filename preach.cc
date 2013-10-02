@@ -696,9 +696,73 @@ double Solve(ListDigraph& g, WeightMap& wMap, NameToNode& nodeMap, vector<Cut>& 
     //return -1.0;
 }
 
+string joinString(vector<string>& parts, string delim){
+    stringstream ss;
+    for(size_t i = 0; i < parts.size(); ++i)
+    {
+      if(i != 0)
+        ss << delim;
+      ss << parts[i];
+    }
+    return ss.str();
+}
+
+void splitString(string str, vector<string>& result, char delim){
+    istringstream stream(str);
+    while (!stream.eof()){
+      string part;
+      getline(stream, part, delim);
+      result.push_back(part);
+    }
+}
+
+string arcToString(ListDigraph& g, WeightMap& wMap, NodeNames& nNames, ListDigraph::Arc& arc){
+    stringstream ss;
+    ss << nNames[g.source(arc)];
+    ss << ">";
+    ss << nNames[g.target(arc)];
+    ss << ">";
+    stringstream ws;
+    ws << wMap[arc];
+    string wString = ws.str();
+    if (wString.length() > 6){
+        wString.resize(6);
+    }
+    ss << wString;
+    return ss.str();
+}
+
+string edgesToReferenceString(ListDigraph& g, WeightMap& wMap, NodeNames& nNames){
+    stringstream ss;
+    vector<string> edges;
+    for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
+        string arcString = arcToString(g, wMap, nNames, arc);
+        edges.push_back(arcString);
+    }
+    return joinString(edges, "$");
+}
+
+bool CheckProcessedReference(ListDigraph& g, WeightMap& wMap, NodeNames& nNames, string reference){
+    vector<string> edges;
+    splitString(reference, edges, '$');
+    for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
+        string arcString = arcToString(g, wMap, nNames, arc);
+        vector<string>::iterator it = find(edges.begin(), edges.end(), arcString);
+        if (it == edges.end()){
+            return false;
+        } else{
+            edges.erase(it);
+        }
+    }
+    if (edges.size() == 0)
+        return true;
+    else
+        return false;
+}
+
 int main(int argc, char** argv)
 {
-    if (argc < 3) {
+    if (argc < 4) {
 		// arg1: network file
 		// arg2: sources file
 		// arg3: targets file
@@ -725,6 +789,17 @@ int main(int argc, char** argv)
 	//cout << endl << "Modified graph size: " << numNodes << " nodes, " << numEdges << " edges" << endl << endl;
 	cout << numNodes << "  " << numEdges << "  ";
 
+	if (argc > 4){
+        // This means that there's a reference preprocessed networks argv[4]
+        // that needs to be compared with the current preprocessed one
+        // If they are the same, should print "REFSAME" and exit
+        if (CheckProcessedReference(g, wMap, nNames, argv[4])){
+            cout << "REFSAME" << endl;
+            return 0;
+        }
+	}
+
+
 	if (numEdges == 0){ // empty graph - source and target unreachable
 	    //cout << ">>0.0" << endl;
 	    cout << "0.0" << endl;
@@ -740,6 +815,10 @@ int main(int argc, char** argv)
 
 	double prob = Solve(g, wMap, nodeMap, cuts);
 	//cout << ">> " << prob << endl;
+
+	// print the edges for reference
+    cout << edgesToReferenceString(g, wMap, nNames) << "  ";
+
 	cout << prob;
 	cout << endl;
     return 0;

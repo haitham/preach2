@@ -3,13 +3,17 @@ dataset = ARGV[0]
 sources = Dir.glob("source*.txt").map{|file| file.split("source").last.split(".").first.to_i}.sort
 targets = Dir.glob("target*.txt").map{|file| file.split("target").last.split(".").first.to_i}.sort
 reference = {}
+ref_edges = {}
 
 sources.each do |source|
 	reference[source] = {}
+	ref_edges[source] = {}
 	targets.each do |target|
 		print "Running #{dataset} reference from #{source} to #{target}: "
 		output = `../../preach #{dataset}.txt source#{source}.txt target#{target}.txt`
-		reference[source][target] = output.strip.split.last.to_f
+		parts = output.strip.split
+		reference[source][target] = parts.pop.to_f
+		ref_edges[source][target] = parts.pop
 		puts reference[source][target]
 	end
 end
@@ -21,10 +25,10 @@ nodes.each do |node|
 	sources.each do |source|
 		targets.each do |target|
 			print "Running missing_#{node} from #{source} to #{target}: "
-			output = `../../preach #{dataset}.missing_#{node}.txt source#{source}.txt target#{target}.txt`
-			new_value = output.strip.split.last.to_f
+			output = `../../preach #{dataset}.missing_#{node}.txt source#{source}.txt target#{target}.txt #{ref_edges[source][target]}`
+			new_value = output.strip.split.last
 			puts new_value
-			values[node] = values[node] + reference[source][target] - new_value
+			values[node] = values[node] + reference[source][target] - new_value.to_f unless new_value == "REFSAME"
 		end
 	end
 	open "#{dataset}.out", "a" do |f|

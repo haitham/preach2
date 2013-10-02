@@ -3,6 +3,7 @@
 #include <iostream>
 #include <assert.h>
 #include <typeinfo>
+#include <sstream>
 
 #include <lemon/list_graph.h>
 #include <lemon/bfs.h>
