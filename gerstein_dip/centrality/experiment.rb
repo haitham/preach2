@@ -5,6 +5,9 @@ targets = Dir.glob("target*.txt").map{|file| file.split("target").last.split("."
 reference = {}
 ref_edges = {}
 
+#reset mid file
+open "#{dataset}.mid", "w" do |f|
+end
 sources.each do |source|
 	reference[source] = {}
 	ref_edges[source] = {}
