@@ -750,8 +750,9 @@ bool CheckProcessedReference(ListDigraph& g, WeightMap& wMap, NodeNames& nNames,
     // The reference string has to have leading and trailing quotes
     //reference.erase(0,1);
     //reference.erase(reference.length()-1, 1);
-    cout << reference << endl;
+    cout << endl << reference << endl;
     splitString(reference, edges, '$');
+    cout << edges[0] << endl;
     for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
         string arcString = arcToString(g, wMap, nNames, arc);
         vector<string>::iterator it = find(edges.begin(), edges.end(), arcString);
