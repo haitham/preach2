@@ -788,6 +788,7 @@ int main(int argc, char** argv)
 	numEdges = countArcs(g);
 	//cout << endl << "Modified graph size: " << numNodes << " nodes, " << numEdges << " edges" << endl << endl;
 	cout << numNodes << "  " << numEdges << "  ";
+	cout << flush;
 
 	if (argc > 4){
         // This means that there's a reference preprocessed networks argv[4]
