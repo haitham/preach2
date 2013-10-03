@@ -11,7 +11,7 @@
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="synthetic/BA/BA0_50.txt synthetic/BA/node0.txt synthetic/BA/node40.txt SOURCE&gt;0&gt;1$40&gt;2&gt;0.5$40&gt;SINK&gt;1$2&gt;0&gt;0.6835$2&gt;2&gt;0.9110$2&gt;40&gt;0.5$0&gt;0&gt;0.8998$0&gt;2&gt;0.7890" />
+				<Option parameters='gerstein_dip/centrality/type1.missing_TAF12.txt gerstein_dip/centrality/source3.txt gerstein_dip/centrality/target65.txt &quot;SOURCE&gt;SPI1&gt;1$TAF1&gt;TBP&gt;0.4386$TAF1&gt;TAF7&gt;0.4448$E2F1&gt;E2F1&gt;0.2275$E2F1&gt;TBP&gt;0.4087$E2F1&gt;BRCA1&gt;0.4443$KAT2A&gt;MYC&gt;0.6218$SUPT3H&gt;SINK&gt;1$MAX&gt;MAX&gt;0.2426$MAX&gt;MYC&gt;0.7126$MAX&gt;SUPT3H&gt;0.5804$MAX&gt;KAT2A&gt;0.7472$JUNB&gt;JUNB&gt;0.2623$JUNB&gt;BRCA1&gt;0.4180$BRCA1&gt;BRCA1&gt;0.2016$BRCA1&gt;MYC&gt;0.5300$BRCA1&gt;JUNB&gt;0.4180$MYC&gt;YY1&gt;0.4254$MYC&gt;BRCA1&gt;0.5300$MYC&gt;MAX&gt;0.7126$MYC&gt;SUPT3H&gt;0.5640$MYC&gt;KAT2A&gt;0.6218$TAF7&gt;YY1&gt;0.5101$YY1&gt;SP1&gt;0.6403$YY1&gt;TAF7&gt;0.5101$YY1&gt;MYC&gt;0.4254$SP1&gt;YY1&gt;0.6403$SP1&gt;TAF7&gt;0.5108$SPI1&gt;TBP&gt;0.4530$TBP&gt;BRCA1&gt;0.2864$TBP&gt;TBP&gt;0.1872$TBP&gt;SPI1&gt;0.4530$TBP&gt;E2F1&gt;0.4087$TBP&gt;TAF1&gt;0.4386&quot;' />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>

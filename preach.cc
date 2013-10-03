@@ -756,6 +756,7 @@ bool CheckProcessedReference(ListDigraph& g, WeightMap& wMap, NodeNames& nNames,
         string arcString = arcToString(g, wMap, nNames, arc);
         vector<string>::iterator it = find(edges.begin(), edges.end(), arcString);
         if (it == edges.end()){
+            cout << "not found: " << arcString << endl;
             return false;
         } else{
             edges.erase(it);
@@ -763,8 +764,10 @@ bool CheckProcessedReference(ListDigraph& g, WeightMap& wMap, NodeNames& nNames,
     }
     if (edges.size() == 0)
         return true;
-    else
+    else{
+        cout << joinString(edges, "#") << endl;
         return false;
+    }
 }
 
 int main(int argc, char** argv)
