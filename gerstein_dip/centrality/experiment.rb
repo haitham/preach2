@@ -28,6 +28,10 @@ nodes.each do |node|
 	sources.each do |source|
 		targets.each do |target|
 			print "Running missing_#{node} from #{source} to #{target}: "
+			if reference[source][target] == 0.0
+				puts "N/A"
+				next
+			end
 			output = `../../preach #{dataset}.missing_#{node}.txt source#{source}.txt target#{target}.txt #{ref_edges[source][target]}`
 			new_value = output.strip.split.last
 			puts new_value

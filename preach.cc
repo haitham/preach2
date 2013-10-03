@@ -808,6 +808,9 @@ int main(int argc, char** argv)
 
 
 	if (numEdges == 0){ // empty graph - source and target unreachable
+	    // print the edges for reference
+        cout << edgesToReferenceString(g, wMap, nNames) << "  ";
+
 	    //cout << ">>0.0" << endl;
 	    cout << "0.0" << endl;
 	    return 0;
