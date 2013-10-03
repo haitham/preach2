@@ -11,7 +11,7 @@
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="gerstein_dip/gerstein_dip.type1.txt gerstein_dip/gerstein_dip_source1.txt gerstein_dip/gerstein_dip_target1.txt" />
+				<Option parameters="synthetic/BA/BA0_50.txt synthetic/BA/node0.txt synthetic/BA/node40.txt SOURCE&gt;0&gt;1$40&gt;2&gt;0.5$40&gt;SINK&gt;1$2&gt;0&gt;0.6835$2&gt;2&gt;0.9110$2&gt;40&gt;0.5$0&gt;0&gt;0.8998$0&gt;2&gt;0.7890" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>

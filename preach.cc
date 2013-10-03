@@ -733,17 +733,24 @@ string arcToString(ListDigraph& g, WeightMap& wMap, NodeNames& nNames, ListDigra
 }
 
 string edgesToReferenceString(ListDigraph& g, WeightMap& wMap, NodeNames& nNames){
-    stringstream ss;
     vector<string> edges;
     for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
         string arcString = arcToString(g, wMap, nNames, arc);
         edges.push_back(arcString);
     }
-    return joinString(edges, "$");
+    stringstream ss;
+    ss << "\"";
+    ss << joinString(edges, "$");
+    ss << "\"";
+    return ss.str();
 }
 
 bool CheckProcessedReference(ListDigraph& g, WeightMap& wMap, NodeNames& nNames, string reference){
     vector<string> edges;
+    // The reference string has to have leading and trailing quotes
+    //reference.erase(0,1);
+    //reference.erase(reference.length()-1, 1);
+    cout << reference << endl;
     splitString(reference, edges, '$');
     for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
         string arcString = arcToString(g, wMap, nNames, arc);
