@@ -795,6 +795,7 @@ int main(int argc, char** argv)
         // If they are the same, should print "REFSAME" and exit
         if (CheckProcessedReference(g, wMap, nNames, argv[4])){
             cout << "REFSAME" << endl;
+            cout << flush;
             return 0;
         }
 	}
