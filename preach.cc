@@ -750,14 +750,11 @@ bool CheckProcessedReference(ListDigraph& g, WeightMap& wMap, NodeNames& nNames,
     // The reference string has to have leading and trailing quotes
     //reference.erase(0,1);
     //reference.erase(reference.length()-1, 1);
-    cout << endl << reference << endl;
     splitString(reference, edges, '#');
-    cout << edges[0] << endl;
     for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
         string arcString = arcToString(g, wMap, nNames, arc);
         vector<string>::iterator it = find(edges.begin(), edges.end(), arcString);
         if (it == edges.end()){
-            cout << "not found: " << arcString << endl;
             return false;
         } else{
             edges.erase(it);
@@ -766,7 +763,6 @@ bool CheckProcessedReference(ListDigraph& g, WeightMap& wMap, NodeNames& nNames,
     if (edges.size() == 0)
         return true;
     else{
-        cout << joinString(edges, "#") << endl;
         return false;
     }
 }
@@ -799,7 +795,6 @@ int main(int argc, char** argv)
 	numEdges = countArcs(g);
 	//cout << endl << "Modified graph size: " << numNodes << " nodes, " << numEdges << " edges" << endl << endl;
 	cout << numNodes << "  " << numEdges << "  ";
-	cout << flush;
 
 	if (argc > 4){
         // This means that there's a reference preprocessed networks argv[4]
@@ -807,7 +802,6 @@ int main(int argc, char** argv)
         // If they are the same, should print "REFSAME" and exit
         if (CheckProcessedReference(g, wMap, nNames, argv[4])){
             cout << "REFSAME" << endl;
-            cout << flush;
             return 0;
         }
 	}
