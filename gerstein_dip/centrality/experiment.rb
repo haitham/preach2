@@ -12,6 +12,9 @@ sources.each do |source|
 		print "Running #{dataset} reference from #{source} to #{target}: "
 		output = `../../preach #{dataset}.txt source#{source}.txt target#{target}.txt`
 		parts = output.strip.split
+		open "#{dataset}.mid", "a" do |f|
+			f.puts output
+		end
 		reference[source][target] = parts.pop.to_f
 		ref_edges[source][target] = parts.pop
 		puts reference[source][target]
