@@ -13,7 +13,7 @@ sources.each do |source|
 		output = `../../preach #{dataset}.txt source#{source}.txt target#{target}.txt`
 		parts = output.strip.split
 		open "#{dataset}.mid", "a" do |f|
-			f.puts output
+			f.puts "#{source}  #{target}  #{output}"
 		end
 		reference[source][target] = parts.pop.to_f
 		ref_edges[source][target] = parts.pop
