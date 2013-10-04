@@ -1,8 +1,8 @@
 datasets = ARGV
-edges = []
-nodes = []
 
 datasets.each do |dataset|
+	edges = []
+	nodes = []
 	open dataset do |f|
 		until (line = f.gets).nil?
 			next if line.strip.empty?
