@@ -25,7 +25,7 @@ sources.each do |source|
 		new_value = output.strip.split.last
 		puts new_value
 		open "type1FOSL2", "a" do |f|
-			puts "#{sprintf "%-10s", (ref[source][target] < new_value.to_f)}#{ref[source][target]}=>#{new_value.to_f}(#{new_value})"
+			f.puts "#{sprintf "%-10s", (ref[source][target] < new_value.to_f)}#{ref[source][target]}=>#{new_value.to_f}(#{new_value})" unless new_value == "REFSAME"
 		end
 	end
 end
