@@ -12,19 +12,22 @@ open hierarchy do |f|
 	end
 end
 
-sources = levels[levels.keys.max]
 targets = []
+nodes = []
 open datafile do |fin|
 	open datafile.gsub(".txt", ".dummy.txt"), "w" do |fout|
 		until (line = fin.gets).nil?
 			next if line.strip.empty?
 			s, t = line.split
-			targets << s unless non_leaf[s]
-			targets << t unless non_leaf[t]
+			nodes << s unless nodes.include? s
+			nodes << t unless nodes.include? t
+			targets << s unless non_leaf[s] or targets.include? s
+			targets << t unless non_leaf[t] or targets.include? t
 			fout.puts "#{line.strip} \t 0.5"
 		end
 	end
 end
+sources = levels[levels.keys.max] & nodes
 
 open datafile.gsub(".txt", "_allsources.txt"), "w" do |fall|
 	sources.each_with_index do |s, i|
