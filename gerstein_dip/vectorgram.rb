@@ -8,10 +8,10 @@ typenames = {"1" => "Hyperdiploid",
 "8" => "T-ALL",
 "9" => "CD10CD19",
 "10" => "CD34",
-"c0" => "Laurenti_all",
-"c1" => "Laurenti_HSC",
-"c2" => "Laurenti_lymphoid",
-"c3" => "Laurenti_myeloid"}
+"c0" => "Control_all",
+"c1" => "Control_HSC",
+"c2" => "Control_lymphoid",
+"c3" => "Control_myeloid"}
 
 files = ARGV
 pairs = []

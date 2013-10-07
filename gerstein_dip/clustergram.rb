@@ -13,10 +13,12 @@ open input do |fin|
 		row_labels = "#{row_labels} '#{parts[0]}'"
 		matrix = "#{matrix}\n#{parts[1..parts.size-1].join " "}"
 	end
+	row_counter = row_counter - 1
 	row_counter.times do |i|
-		color_row = 3.times.map{1.0 - i.to_f/row_counter.to_f}.join(" ")
+		color_row = 3.times.map{i.to_f/row_counter.to_f}.join(" ")
 		graymap = "#{graymap}\n#{color_row}"
 	end
+	graymap = "#{graymap}\n1.0 1.0 1.0"
 	row_labels = "{#{row_labels}}"
 	matrix = "[#{matrix}]"
 	graymap = "[#{graymap}]"
