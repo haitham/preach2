@@ -237,6 +237,16 @@ void CollapseELementaryPaths(ListDigraph& g, WeightMap& wMap, NodeNames& nMap){
 	}
 }
 
+/*
+Removes edges that are self cycles
+*/
+void RemoveSelfCycles(ListDigraph& g){
+    for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
+        if (g.source(arc) == g.target(arc)){
+            g.erase(arc);
+        }
+    }
+}
 
 /*Does the needed preprocessing of the graph:
  * adding source & sink
@@ -256,6 +266,7 @@ void Preprocess(ListDigraph& g,
 	if (pre == PRE_YES){
 		RemoveIsolatedNodes(g, nodeMap);
 		CollapseELementaryPaths(g, wMap, nMap);
+		RemoveSelfCycles(g);
 	}
 	//EXTRA STEP: make sure source and sink are not directly connected
 	ListDigraph::Node source = nodeMap[SOURCE];
