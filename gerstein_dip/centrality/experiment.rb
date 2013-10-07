@@ -46,6 +46,6 @@ nodes.each do |node|
 	end
 end
 
-open "#{dataset}.sorted.out", "w" do |f|
+open "#{dataset}.sort", "w" do |f|
 	values.map{|k,v| [k,v]}.sort{|a,b| b[1] <=> a[1]}.each{|p| f.puts "#{sprintf "%-12f", p[1]}#{"  "}#{p[0]}"}
 end
