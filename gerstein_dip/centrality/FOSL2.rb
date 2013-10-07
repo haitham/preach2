@@ -14,6 +14,7 @@ open "type1.mid" do |f|
 	end
 end
 
+value = 0.0
 sources.each do |source|
 	targets.each do |target|
 		print "Running missing_FOSL2 from #{source} to #{target}: "
@@ -24,8 +25,11 @@ sources.each do |source|
 		output = `../../preach type1.missing_FOSL2.txt source#{source}.txt target#{target}.txt #{ref_edges[source][target]}`
 		new_value = output.strip.split.last
 		puts new_value
-		open "type1FOSL2", "a" do |f|
-			f.puts "#{sprintf "%-10s", (ref[source][target] < new_value.to_f)}#{ref[source][target]}=>#{new_value.to_f}(#{new_value})" unless new_value == "REFSAME"
+		unless new_value == "REFSAME"
+			value = value + ref[source][target] - new_value.to_f
+			open "type1FOSL2", "a" do |f|
+				f.puts "#{sprintf "%-10s", (ref[source][target] < new_value.to_f)}#{ref[source][target]}=>#{new_value.to_f}(#{new_value})[diff:#{ref[source][target] - new_value.to_f}, agg:#{value}]"
+			end
 		end
 	end
 end
