@@ -190,6 +190,19 @@ void RemoveIsolatedNodes(ListDigraph& g, NameToNode& nodeMap){
     }END_FOREACH;
 }
 
+
+/*
+Removes edges that are self cycles
+*/
+void RemoveSelfCycles(ListDigraph& g){
+    for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
+        if (g.source(arc) == g.target(arc)){
+            g.erase(arc);
+        }
+    }
+}
+
+
 /*Collapses all elementary paths
  * An elementary path: a --> x --> b , with x not connected to anything else
  * we delete x and create a new link a --> b with weight w = weight(a-->x)*weight(x-->b)
@@ -201,11 +214,12 @@ void CollapseELementaryPaths(ListDigraph& g, WeightMap& wMap, NodeNames& nMap){
 	bool changing = true;
 	while(changing){
 		changing = false;
+		RemoveSelfCycles(g);
 		vector<ListDigraph::Node> elementaryNodes;
 		for (ListDigraph::NodeIt node(g); node != INVALID; ++node){
 			if (nMap[node] == SOURCE || nMap[node] == SINK)
 				continue;
-			if (getNodeInDegree(g, node) == 1 && getNodeOutDegree(g, node) == 1){
+            if (getNodeInDegree(g, node) == 1 && getNodeOutDegree(g, node) == 1){
 				// elementary path, mark node to be removed
 				elementaryNodes.push_back(node);
 			}
@@ -237,17 +251,6 @@ void CollapseELementaryPaths(ListDigraph& g, WeightMap& wMap, NodeNames& nMap){
 	}
 }
 
-/*
-Removes edges that are self cycles
-*/
-void RemoveSelfCycles(ListDigraph& g){
-    for (ListDigraph::ArcIt arc(g); arc != INVALID; ++arc){
-        if (g.source(arc) == g.target(arc)){
-            g.erase(arc);
-        }
-    }
-}
-
 /*Does the needed preprocessing of the graph:
  * adding source & sink
  * remove isolated nodes
@@ -261,10 +264,9 @@ void Preprocess(ListDigraph& g,
 		string sourcesFile,
 		string targetsFile,
 		string pre){
-
-	UnifyTerminals(g, wMap, nMap, nodeMap, sourcesFile, targetsFile);
+    UnifyTerminals(g, wMap, nMap, nodeMap, sourcesFile, targetsFile);
 	if (pre == PRE_YES){
-		RemoveIsolatedNodes(g, nodeMap);
+	    RemoveIsolatedNodes(g, nodeMap);
 		CollapseELementaryPaths(g, wMap, nMap);
 		RemoveSelfCycles(g);
 	}
