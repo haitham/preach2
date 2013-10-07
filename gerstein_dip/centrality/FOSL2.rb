@@ -9,7 +9,7 @@ open "type1.mid" do |f|
 		parts = line.strip.split
 		ref[parts[0].to_i] ||= {}
 		ref_edges[parts[0].to_i] ||= {}
-		ref[parts[0].to_i][parts[1].to_i] = parts.pop
+		ref[parts[0].to_i][parts[1].to_i] = parts.pop.to_f
 		ref_edges[parts[0].to_i][parts[1].to_i] = parts.pop
 	end
 end
