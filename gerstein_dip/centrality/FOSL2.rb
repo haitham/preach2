@@ -7,10 +7,10 @@ ref_edges = {}
 open "type1.mid" do |f|
 	until (line = f.gets).nil?
 		parts = line.strip.split
-		ref[parts[0]] ||= {}
-		ref_edges[parts[0]] ||= {}
-		ref[parts[0]][parts[1]] = parts.pop
-		ref_edges[parts[0]][parts[1]] = parts.pop
+		ref[parts[0].to_i] ||= {}
+		ref_edges[parts[0].to_i] ||= {}
+		ref[parts[0].to_i][parts[1].to_i] = parts.pop
+		ref_edges[parts[0].to_i][parts[1].to_i] = parts.pop
 	end
 end
 
