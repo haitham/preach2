@@ -24,6 +24,9 @@ sources.each do |source|
 	end
 end
 
+#reset out file
+open "#{dataset}.out", "w" do |f|
+end
 nodes = Dir.glob("#{dataset}.missing_*.txt").map{|file| file.split("missing_").last.split(".txt").first}
 values = {}
 nodes.each do |node|
