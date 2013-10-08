@@ -14,12 +14,13 @@ datasets.each do |dataset|
 	deltas.each do |delta|
 		repetitions.times do |i|
 			open dataset.gsub(".txt", "_#{delta}_#{i}.txt"), "w" do |f|
+				puts dataset.gsub(".txt", "_#{delta}_#{i}.txt")
 				lines.each do |line|
 					prob = line[2].to_f
 					max = prob + delta > 1.0 ? 1.0 : prob + delta
 					min = prob - delta < 0.0 ? 0.0 : prob - delta
-					line[2] = min + rand * (max - min)
-					f.puts line.join " "
+					prob = min + rand * (max - min)
+					f.puts "#{line[0]} #{line[2]} #{prob}"
 				end
 			end
 		end
