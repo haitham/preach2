@@ -20,7 +20,7 @@ datasets.each do |dataset|
 					max = prob + delta > 1.0 ? 1.0 : prob + delta
 					min = prob - delta < 0.0 ? 0.0 : prob - delta
 					prob = min + rand * (max - min)
-					f.puts "#{line[0]} #{line[2]} #{prob}"
+					f.puts "#{line[0]} #{line[1]} #{prob}"
 				end
 			end
 		end
