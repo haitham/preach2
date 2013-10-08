@@ -11,7 +11,7 @@
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="gerstein_dip/centrality/type1.missing_TAF12.txt gerstein_dip/centrality/source3.txt gerstein_dip/centrality/target65.txt " />
+				<Option parameters="gerstein_dip/centrality/type1.missing_FOSL2.txt gerstein_dip/centrality/source5.txt gerstein_dip/centrality/target3.txt " />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>

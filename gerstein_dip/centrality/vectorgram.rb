@@ -12,6 +12,7 @@ typenames = {"1" => "Hyperdiploid",
 "_GSE42414_2" => "Control_lymphoid",
 "_GSE42414_3" => "Control_myeloid"}
 
+REACHABLE_PAIRS_COUNT = 249
 files = ARGV
 nodes = []
 #fix a specific ordering for nodes across all files
@@ -29,17 +30,22 @@ files.each do |file|
 		until (line = f.gets).nil?
 			next if line.strip.empty?
 			node, c = line.strip.split
-			cent[node] = c.to_f.round(6).to_s
+			cent[node] = c.to_f.round(6)
 		end
 	end
 	type = file.split("type").last.split(".").first
 	cents[type] = cent
 end
 
+# filter out nodes of all-zero centrality
+deleteables = []
+nodes.each{|n| deleteables << n if cents.keys.map{|t| cents[t][n] < 1.0}.all?}
+nodes = nodes - deleteables
+
 open "centrality.vectors.table", "w" do |f|
 	f.puts "#{sprintf "%-20s", ""}#{nodes.map{|p| sprintf "%-14s", p}.join}"
 	cents.each do |type, cent|
-		f.puts "#{sprintf "%-20s", typenames[type]}#{nodes.map{|n| sprintf "%-14s", (cent[n])}.join}"
+		f.puts "#{sprintf "%-20s", typenames[type]}#{nodes.map{|n| sprintf "%-14f", 100.0*cent[n]/REACHABLE_PAIRS_COUNT}.join}"
 	end
 end
 

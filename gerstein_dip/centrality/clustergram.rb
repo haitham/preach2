@@ -24,7 +24,7 @@ open input do |fin|
 	graymap = "[#{graymap}]"
 end
 
-open "matlab/#{input.gsub(".table", ".m").gsub("reachability.", "cluster_#{"gray_" if grayscale}")}", "w" do |fout|
+open "matlab/#{input.gsub(".table", ".m").gsub("centrality.", "centrality_#{"gray_" if grayscale}")}", "w" do |fout|
 	fout.puts "RowLabels = #{row_labels}"
 	fout.puts "ColumnLabels = #{column_labels}"
 	fout.puts "Matrix = #{matrix}"

@@ -12,6 +12,7 @@ datasets.each do |dataset|
 			nodes << parts[1] unless nodes.include? parts[1]
 		end
 	end
+	puts "nodes: #{nodes.size}"
 
 	nodes.each do |node|
 		open dataset.gsub(".txt", ".missing_#{node}.txt"), "w" do |f|
