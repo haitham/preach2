@@ -17,27 +17,20 @@ end
 
 #reinitialize the output file
 open "#{dataset}.out", "w" do |f|
-	f.puts "#{sprintf "%-4s", "#s"}#{sprintf "%-4s", "t"}#{deltas.map{|d| sprintf "%-14s", d}.join}"
+	f.puts "#{sprintf "%-4s", "#s"}#{sprintf "%-4s", "t"}#{sprintf "%-4s", "i"}#{sprintf "%-14s", "ref"}#{deltas.map{|d| sprintf "%-14s", d}.join}"
 end
 #run reptitions for each delta
 pairs.each do |pair|
 	s, t = pair.split.map{|p| p.strip}
-	open "#{dataset}.out", "a" do |f|
-		f.print "#{sprintf "%-4s", s}#{sprintf "%-4s", t}"
-	end
-	deltas.each do |delta|
-		print "#{pair} d#{delta}: #{ref[pair]}=>"
-		agg = 0.0
-		repetitions.times do |i|
+	puts pair
+	repetitions.times do |i|
+		vals = []
+		deltas.each do |delta|
 			output = `../../preach #{dataset}_#{delta}_#{i}.txt source#{s}.txt target#{t}.txt`
-			agg = agg + output.strip.split.last.to_f
+			vals << output.strip.split.last.to_f
 		end
 		open "#{dataset}.out", "a" do |f|
-			f.print sprintf("%-14f", (ref[pair] - agg/repetitions).round(8))
+			f.puts "#{sprintf "%-4s", s}#{sprintf "%-4s", t}#{sprintf "%-4d", i}#{sprintf "%-14f", ref[pair].round(8)}#{vals.map{|v| sprintf("%-14f", val.round(8))}.join}"
 		end
-		puts "#{agg/repetitions}(#{(ref[pair] - agg/repetitions).round(8)})"
-	end
-	open "#{dataset}.out", "a" do |f|
-		f.puts
 	end
 end
