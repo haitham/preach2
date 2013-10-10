@@ -30,7 +30,7 @@ pairs.each do |pair|
 			vals << output.strip.split.last.to_f
 		end
 		open "#{dataset}.out", "a" do |f|
-			f.puts "#{sprintf "%-4s", s}#{sprintf "%-4s", t}#{sprintf "%-4d", i}#{sprintf "%-14f", ref[pair].round(8)}#{vals.map{|v| sprintf("%-14f", val.round(8))}.join}"
+			f.puts "#{sprintf "%-4s", s}#{sprintf "%-4s", t}#{sprintf "%-4d", i}#{sprintf "%-14f", ref[pair].round(8)}#{vals.map{|v| sprintf("%-14f", v.round(8))}.join}"
 		end
 	end
 end
